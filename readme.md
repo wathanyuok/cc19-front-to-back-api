@@ -1,87 +1,111 @@
 # Server
 
 ## Step 1 create package
+
 ```bash
 npm init -y
 ```
 
 ## Step 2 install package....
+
 ```bash
 npm install express nodemon cors morgan bcryptjs jsonwebtoken zod prisma
 ```
+
 ```bash
 npx prisma init
 ```
+
 ## Step 3 Git
+
+create repo in github.com
+
 ```bash
 git init
 git add .
 git commit -m "message"
 ```
-next step
+
+next Step
 copy code from repo
 only first time
+
 ```bash
-git remote add origin https://github.com/wathanyuok/cc19-front-to-back-api.git
+git remote add origin https://github.com/tamphimai007/cc19-front-to-back-api.git
 git branch -M main
 git push -u origin main
 ```
 
-when uppdate code
+when update code
+
 ```bash
 git add .
 git commit -m "message"
 git push
 ```
+
 ## Step 4 update package.json
-``` json
- "scripts": {
+
+```json
+{
+  "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start" : "nodemon index.js"
-  },
+    "start": "nodemon index.js"
+  }
+}
 ```
+
 and code
 index.js
+
 ```js
-const express = require('express')
+const express = require("express");
 const app = express();
 
 // Start Server
-const PORT = 3000
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = 8000;
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
 ```
-## Step 5 Middlewares
-```s
-const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
+
+## Step 5 use middlewares
+
+```js
+const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
 const app = express();
 
 // Middlewares
 app.use(cors()); // Allows cross domain
-app.use(morgan('dev')); // Show log terminal
+app.use(morgan("dev")); // Show log terminal
 app.use(express.json()); // For read json
 
+// Routing
 
 // Start Server
-const PORT = 3000
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = 8000;
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
 ```
 
-## Step 6 Routes & controllers [register]
-```bash
-// /controllers/auth-controller.js
-exports.register = (req, res, next) => {
-    try {
-        // code
-        res.json({ message: "hello register " });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Server Error!!" });
-    }
-};
+## Step 6 Routing & Controller [Register]
 
-// /routes/auth-route.js
+/controllers/auth-controller.js
+
+```js
+exports.register = (req, res, next) => {
+  try {
+    // code
+    res.json({ message: "hello register " });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server Error!!" });
+  }
+};
+```
+
+/routes/auth-route.js
+
+```js
 const express = require("express");
 const router = express.Router();
 const authControllers = require("../controllers/auth-controller");
@@ -92,91 +116,55 @@ router.post("/register", authControllers.register);
 // export
 module.exports = router;
 ```
-## Step 7 controllers [Login]
-```bash
-exports.register = (req, res, next) => {
-    try {
-        // code
-        res.json({ message: "hello register " });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Server Error!!" });
-    }
-};
 
-exports.login = (req, res, next) => {
-    try {
-        res.json({ message: "hello login " });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Server Error!!" });
-    }
-}
-```
-##  Step8 [middilewares -> error.js]
-``` bash
+## Step 7 Create handle Error
+
+/middlewares/error.js
+
+```js
 const handleErrors = (err, req, res, next) => {
-
-    res
-    .status(err.statusCode ||500)
-    .json({ message: err.message || "Something wrong!!"})
-
-}
-
-// export
+  res
+    .status(err.statusCode || 500)
+    .json({ message: err.message || "Something wrong!!" });
+};
 module.exports = handleErrors;
-------------------------------------------------------------
-จากนั้นไปที่ index.js
-const handleErrors = require('./middlewares/error')
-// Error Handling
+```
+
+and use in index.js
+
+```js
+const handleErrors = require("./middlewares/error");
+
+// Handle errors
 app.use(handleErrors);
+```
 
-ลอง ปรับจาก auth-controller.js ให้เป็นแบบนี้
+and change in try_catch
+
+```js
 exports.login = (req, res, next) => {
-    try {
-        console.log(sdfsdf)
-        res.json({ message: "hello login " });
-    } catch (error) {
-        next(error)
-    }
-}
-
-จากนั้นลองยิง postman -> POST
-http://localhost:8000/api/login
-{
-    "message": "aaa is not defined"
-}
-
-----------------
-อย่าลืมเปลี่ยนเป็น next(error)  [middilewares -> auth-contoller.js]
-
-exports.register = (req, res, next) => {
-    try {
-        // code
-        res.json({ message: "hello register " });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Server Error!!" });
-    }
+  //code
+  try {
+    console.log(aaa);
+    res.json({ message: "Hello Login " });
+  } catch (error) {
+    next(error);
+  }
 };
+```
 
+when update code in Github
 
-// เปลี่ยนเป็น next(error)
-exports.register = (req, res, next) => {
-    try {
-        // code
-        res.json({ message: "hello register " });
-    } catch (error) {
-        next(error)
-    }
-};
+```bash
+git add .
+git commit -m "message"
+git push
+```
 
-exports.login = (req, res, next) => {
-    try {
-        console.log(aaa)
-        res.json({ message: "hello login " });
-    } catch (error) {
-        next(error)
-    }
-}
+```plaintext
+text
+```
 
+|METHOD|ENDPOINT|BODY|
+|-----|-----|-----|
+|POST|/api/register| email,password|
